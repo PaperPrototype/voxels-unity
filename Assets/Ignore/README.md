@@ -1,0 +1,1 @@
+This section of the repo are test projects I made while developing the course.

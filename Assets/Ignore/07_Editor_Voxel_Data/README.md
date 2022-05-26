@@ -1,0 +1,1 @@
+We switch to creating an array of voxel data that can be edited once it is created. We also re-mesh after each edit so that the changed are visible.
