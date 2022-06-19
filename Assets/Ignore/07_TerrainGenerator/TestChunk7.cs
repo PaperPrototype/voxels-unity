@@ -1,14 +1,14 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Unity.Mathematics;
 
-public class Chunk : MonoBehaviour
+public class TestChunk7 : MonoBehaviour
 {
-    public TerrainGenerator terrainGenerator;
+    public TestTerrainGenerator terrainGenerator;
 
     private void Start()
     {
-        // initialize layers
         terrainGenerator.Initialize();
 
         for (int x = 0; x < terrainGenerator.ChunkResolution; x++)
@@ -25,7 +25,6 @@ public class Chunk : MonoBehaviour
             }
         }
 
-        // complete and set the mesh for each layer
         terrainGenerator.Complete();
     }
 
@@ -33,7 +32,6 @@ public class Chunk : MonoBehaviour
     {
         Vector3 offsetPos = new Vector3(x, y, z);
 
-        // update this
         var voxelType = terrainGenerator.GetVoxelType(x, y, z);
 
         for (int side = 0; side < 6; side++)
@@ -42,7 +40,6 @@ public class Chunk : MonoBehaviour
             {
                 try
                 {
-                    // update this
                     terrainGenerator.Layers[voxelType.layer].MeshQuad(offsetPos, voxelType, side);
                 }
                 catch
@@ -57,7 +54,6 @@ public class Chunk : MonoBehaviour
     {
         int3 offset = Tables.NeighborOffsets[side];
 
-        // update this
         var neighborVoxelType = terrainGenerator.GetVoxelType(x + offset.x, y + offset.y, z + offset.z);
 
         // if from different layers
@@ -71,7 +67,6 @@ public class Chunk : MonoBehaviour
 
     private bool IsSolid(int x, int y, int z)
     {
-        // update this
         // if outside of the chunk
         if (x < 0 || x >= terrainGenerator.ChunkResolution ||
             y < 0 || y >= terrainGenerator.ChunkResolution ||
@@ -80,7 +75,6 @@ public class Chunk : MonoBehaviour
             return false; // air
         }
 
-        // update this
         return terrainGenerator.GetVoxelType(x, y, z).isSolid;
     }
 }

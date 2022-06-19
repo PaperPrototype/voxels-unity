@@ -1,15 +1,18 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using Unity.Mathematics;
 
-public class TestChunk5 : MonoBehaviour
+public class ChunkChallenge : MonoBehaviour
 {
+    // size of the chunk
     public int ChunkResolution = 16;
 
-    //                                   by default create at least 1 layer and voxel type
-    public TestVoxelType5[] voxelTypes = new TestVoxelType5[1];
-    public TestLayer[] layers          = new TestLayer[1];
+    // voxel types and layers
+    public VoxelType[] voxelTypes;
+    public Layer[] layers;
 
-    FastNoiseLite noise;
+    // noise
+    private FastNoiseLite noise;
 
     private void Start()
     {
@@ -18,7 +21,7 @@ public class TestChunk5 : MonoBehaviour
         // init mesh layers
         for (int i = 0; i < layers.Length; i++)
         {
-            layers[i].Init(ChunkResolution);
+            layers[i].Initialize(ChunkResolution);
         }
 
         for (int x = 0; x < ChunkResolution; x++)
@@ -50,12 +53,13 @@ public class TestChunk5 : MonoBehaviour
 
         for (int side = 0; side < 6; side++)
         {
-            if (!IsNeighborSolid(x, y, z, side))
+            if (!IsNeighborSolid(x, y, z, side, voxelType))
             {
                 try
                 {
                     layers[voxelType.layer].MeshQuad(offsetPos, voxelType, side);
-                } catch
+                }
+                catch
                 {
                     Debug.LogError("Voxel type is accessing layer that does not exist and is out of bounds of the layers array.");
                 }
@@ -63,18 +67,24 @@ public class TestChunk5 : MonoBehaviour
         }
     }
 
-    private bool IsNeighborSolid(int x, int y, int z, int side)
+    private bool IsNeighborSolid(int x, int y, int z, int side, VoxelType selfVoxelType)
     {
         int3 offset = Tables.NeighborOffsets[side];
 
-        GetVoxelType(x, y, z);
+        var neighborVoxelType = GetVoxelType(x + offset.x, y + offset.y, z + offset.z);
+
+        // if from different layers
+        if (neighborVoxelType.layer != selfVoxelType.layer)
+        {
+            return false; // treat eachother as air
+        }
 
         return IsSolid(x + offset.x, y + offset.y, z + offset.z);
     }
 
     private bool IsSolid(int x, int y, int z)
     {
-        // if outside of chunk
+        // if outside of the chunk
         if (x < 0 || x >= ChunkResolution ||
             y < 0 || y >= ChunkResolution ||
             z < 0 || z >= ChunkResolution)
@@ -85,38 +95,23 @@ public class TestChunk5 : MonoBehaviour
         return GetVoxelType(x, y, z).isSolid;
     }
 
-    private TestVoxelType5 GetVoxelType(int x, int y, int z)
+    private VoxelType GetVoxelType(int x, int y, int z)
     {
-        float terrainHeight = GetNoiseHeight(8, 1, x, z);
+        //float terrainHeight = GetNoiseHeight(8, 1, x, z);
+
+        //float caves = GetNoise(1f, x, y, z);
 
         try
         {
-            if (y == 5)
-            {
-                return voxelTypes[3]; // sand
-            }
-
-            if (y < terrainHeight)
-            {
-                return voxelTypes[1]; // dirt
-            } 
-
-            if (y < (terrainHeight + 1))
-            {
-                return voxelTypes[2]; // grass
-            }
-            else if (y < 8)
-            {
-                return voxelTypes[4]; // water
-            }
-
-            return voxelTypes[0]; // air
-        } catch
-        {
-            Debug.LogError("That voxel type does not exist. You are trying to access a voxel type that is outside of the voxelTypes array.");
-            return new TestVoxelType5();
+            return voxelTypes[1]; // dirt
         }
-       
+        catch
+        {
+            Debug.LogError("That voxel type does not exist. You are offsetting outside of the voxelTypes array.");
+
+            // give back new VoxelType (will use defaults we set in the VoxelType class)
+            return new VoxelType();
+        }
     }
 
     // get noise height in range of floorHeight to maxHeight
@@ -131,7 +126,13 @@ public class TestChunk5 : MonoBehaviour
                 ) / 2                       // range  0           to 1
             ) * (maxHeight - floorHeight)   // range  0           to (maxHeight - floorHeight)
         ) + floorHeight;                    /* range  floorHeight to ((maxHeight - floorHeight) + floorHeight) 
-                                             * simplifies to ===> floorHeight to maxHeight 
+                                             * simplifies ===> floorHeight to maxHeight 
                                              */
+    }
+
+    // get noise for caves and other stuff
+    private float GetNoise(float amplitude, float x, float y, float z)
+    {
+        return noise.GetNoise(x * amplitude, y * amplitude, z * amplitude);
     }
 }

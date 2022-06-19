@@ -108,12 +108,22 @@ public class TestChunk3 : MonoBehaviour
     {
         float terrainHeight = GetNoiseHeight(8, 1, x, z);
 
-        if (y > terrainHeight)
+        try
         {
-            return voxelTypes[0]; // air
-        }
+            if (y > terrainHeight)
+            {
+                return voxelTypes[0]; // air
+            }
 
-        return voxelTypes[1]; // dirt
+            return voxelTypes[1]; // dirt
+        }
+        catch
+        {
+            Debug.LogError("That voxel type does not exist. You are offsetting outside of the voxelTypes array.");
+
+            // give back new VoxelType (will use defaults we set in the VoxelType class)
+            return new TestVoxelType3();
+        }
     }
 
     // get noise height in range of floorHeight to maxHeight

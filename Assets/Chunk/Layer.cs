@@ -3,7 +3,7 @@ using System;
 using UnityEngine.Rendering;
 
 [Serializable]
-public class TestLayer
+public class Layer
 {
     public string name = "default";
     public bool useCollider = true;
@@ -23,7 +23,7 @@ public class TestLayer
     [SerializeField] private int vertexOffset = 0;
     [SerializeField] private int triangleOffset = 0;
 
-    public void Init(int chunkResolution)
+    public void Initialize(int chunkResolution)
     {
         // intialize gameObject for this layer
         gameObject = new GameObject();
@@ -43,7 +43,7 @@ public class TestLayer
     }
 
     // mesh quad on specific side of voxel
-    public void MeshQuad(Vector3 offsetPos, TestVoxelType5 voxelType, int side)
+    public void MeshQuad(Vector3 offsetPos, VoxelType voxelType, int side)
     {
         vertices[vertexOffset + 0] = Tables.Vertices[Tables.QuadVertices[side, 0]] + offsetPos;
         vertices[vertexOffset + 1] = Tables.Vertices[Tables.QuadVertices[side, 1]] + offsetPos;
@@ -67,7 +67,7 @@ public class TestLayer
         triangleOffset += 6;
         vertexOffset += 4;
     }
-    
+
     public void Complete()
     {
         // instantiate new mesh and set arrays

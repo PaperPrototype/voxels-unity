@@ -9,7 +9,7 @@ public class TestChunk4 : MonoBehaviour
 {
     public int ChunkResolution = 16;
     public TestVoxelType4[] voxelTypes;
-    public int atlasSize = 1; // x and y size
+    public int atlasSize = 1; // number of textures in atlas in the x and y
 
     private Vector3[] vertices;
     private int[] triangles;
@@ -74,16 +74,14 @@ public class TestChunk4 : MonoBehaviour
                 triangles[triangleOffset + 4] = vertexOffset + 1;
                 triangles[triangleOffset + 5] = vertexOffset + 3;
 
-                // var is a shortcut for the type
-                // instead of TestVoxelType4 we can just say `var` and it will figure out we want a TestVoxelType4
                 var voxelType = GetVoxelType(x, y, z);
 
                 // apply offset and add uv corner offsets
-                // then divide by the atlas size to get a smaller section (AKA our individual texture)
-                uvs[vertexOffset + 0] = (voxelType.uvOffset + new Vector2(0, 0)) / atlasSize;
-                uvs[vertexOffset + 1] = (voxelType.uvOffset + new Vector2(0, 1)) / atlasSize;
-                uvs[vertexOffset + 2] = (voxelType.uvOffset + new Vector2(1, 0)) / atlasSize;
-                uvs[vertexOffset + 3] = (voxelType.uvOffset + new Vector2(1, 1)) / atlasSize;
+                // then divide by the atlas size to get a smaller section (AKA our sub-texture in the atlas)
+                uvs[vertexOffset + 0] = (voxelType.atlasOffset + new Vector2(0, 0)) / atlasSize;
+                uvs[vertexOffset + 1] = (voxelType.atlasOffset + new Vector2(0, 1)) / atlasSize;
+                uvs[vertexOffset + 2] = (voxelType.atlasOffset + new Vector2(1, 0)) / atlasSize;
+                uvs[vertexOffset + 3] = (voxelType.atlasOffset + new Vector2(1, 1)) / atlasSize;
 
                 triangleOffset += 6;
                 vertexOffset += 4;

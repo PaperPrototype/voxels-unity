@@ -256,25 +256,26 @@ MonoBehaviour:
   - name: Air
     layer: 0
     isSolid: 0
-    uvOffset: {x: 0, y: 0}
+    atlasOffset: {x: 0, y: 0}
   - name: Dirt
     layer: 0
     isSolid: 1
-    uvOffset: {x: 0, y: 0}
+    atlasOffset: {x: 0, y: 0}
   - name: Grass
     layer: 0
     isSolid: 1
-    uvOffset: {x: 1, y: 0}
+    atlasOffset: {x: 1, y: 0}
   - name: Sand
     layer: 0
     isSolid: 1
-    uvOffset: {x: 2, y: 0}
+    atlasOffset: {x: 2, y: 0}
   - name: Water
     layer: 1
     isSolid: 1
-    uvOffset: {x: 3, y: 0}
+    atlasOffset: {x: 3, y: 0}
   layers:
-  - useCollider: 1
+  - name: default
+    useCollider: 1
     material: {fileID: 2100000, guid: 00f0e235e48e4475ca1d4f90446ef5c5, type: 2}
     atlasSize: 4
     gameObject: {fileID: 0}
@@ -286,7 +287,8 @@ MonoBehaviour:
     uvs: []
     vertexOffset: 0
     triangleOffset: 0
-  - useCollider: 0
+  - name: default
+    useCollider: 0
     material: {fileID: 2100000, guid: 9e5540e0dca50438eb2a3293bc49cb96, type: 2}
     atlasSize: 4
     gameObject: {fileID: 0}
